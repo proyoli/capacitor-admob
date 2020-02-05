@@ -319,6 +319,7 @@ public class AdMob: CAPPlugin, GADBannerViewDelegate, GADInterstitialDelegate, G
             }
             
             self.rewardedAd = GADRewardedAd(adUnitID: adUnitID)
+            
             self.rewardedAd?.load(GADRequest()) { error in
                 if let error = error {
                     NSLog("AdMob Reward: Loading failed: \(error)")
@@ -351,7 +352,7 @@ public class AdMob: CAPPlugin, GADBannerViewDelegate, GADInterstitialDelegate, G
     }
     
     /// Tells the delegate that the rewarded ad was presented.
-    private func rewardedAdDidPresent(_ rewardedAd: GADRewardedAd) {
+    public func rewardedAdDidPresent(_ rewardedAd: GADRewardedAd) {
         NSLog("AdMob Reward ad presented.")
         self.notifyListeners("onRewardedVideoAdOpened", data: ["value": true])
         self.notifyListeners("onRewardedVideoStarted", data: ["value": true])
@@ -359,19 +360,19 @@ public class AdMob: CAPPlugin, GADBannerViewDelegate, GADInterstitialDelegate, G
     /// Tells the delegate that the user earned a reward.
     public func rewardedAd(_ rewardedAd: GADRewardedAd, userDidEarn reward: GADAdReward) {
         NSLog("AdMob Reward received with currency: \(reward.type), amount \(reward.amount).")
-        self.notifyListeners("onRewarded", data: ["value": true])
+        //self.notifyListeners("onRewardedVideoAdClosed", data: ["value": true])
         self.notifyListeners("onRewardedVideoCompleted", data: ["type": reward.type, "amount": reward.amount])
+        self.notifyListeners("onRewarded", data: ["value": true])
         self.notifyListeners("onRewardedVideoAdClosed", data: ["value": true])
     }
     /// Tells the delegate that the rewarded ad was dismissed.
-    private func rewardedAdDidDismiss(_ rewardedAd: GADRewardedAd) {
+    public func rewardedAdDidDismiss(_ rewardedAd: GADRewardedAd) {
         NSLog("AdMob Reward ad dismissed.")
         self.notifyListeners("onRewardedVideoAdLeftApplication", data: ["value": true])
     }
     /// Tells the delegate that the rewarded ad failed to present.
-    private func rewardedAd(_ rewardedAd: GADRewardedAd, didFailToPresentWithError error: Error) {
+    public func rewardedAd(_ rewardedAd: GADRewardedAd, didFailToPresentWithError error: Error) {
         NSLog("AdMob Reward ad failed to present.")
         self.notifyListeners("onRewardedVideoAdFailedToLoad", data: ["error": error.localizedDescription])
     }
-    
 }
